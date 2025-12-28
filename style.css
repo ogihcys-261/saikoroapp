@@ -92,18 +92,18 @@ button:active{ transform: translateY(1px) scale(0.99); }
   word-break: break-word;
 }
 
-/* 大吉演出（控えめに金色） */
-.lucky #face{
-  background: linear-gradient(90deg, var(--gold1), var(--gold2), var(--gold1));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 18px rgba(245,158,11,0.18), 0 12px 32px rgba(17,24,39,0.10);
-  filter: drop-shadow(0 0 10px rgba(245,158,11,0.10));
+/* フラッシュ（共用） */
+.flash{
+  position:absolute; inset:0;
+  background: radial-gradient(420px 240px at 50% 45%, rgba(255,255,255,0.98), rgba(255,255,255,0.0));
+  opacity:0;
+  pointer-events:none;
 }
-.lucky .out{
-  border-color: rgba(245,158,11,0.30);
-  box-shadow: 0 0 0 1px rgba(245,158,11,0.12) inset, 0 18px 60px rgba(245,158,11,0.10);
+.flash.on{ animation: flash .35s ease-out 1; }
+@keyframes flash{
+  0%{ opacity:0; }
+  10%{ opacity:1; }
+  100%{ opacity:0; }
 }
 
 /* 通常の揺れ */
@@ -117,7 +117,7 @@ button:active{ transform: translateY(1px) scale(0.99); }
   100%{ transform: translate(0,0) rotate(0deg); }
 }
 
-/* とんでも専用：ド派手揺れ */
+/* とんでも用：強め揺れ（ただし“大きい数字”には使わない運用） */
 .shake-weird{ animation: shakeWeird .38s linear 1; }
 @keyframes shakeWeird{
   0%{ transform: translate(0,0) rotate(0deg) scale(1); }
@@ -141,53 +141,7 @@ button:active{ transform: translateY(1px) scale(0.99); }
   100%{ transform: translate(0,0) scale(1); }
 }
 
-/* フラッシュ（通常/爆発で共用） */
-.flash{
-  position:absolute; inset:0;
-  background: radial-gradient(420px 240px at 50% 45%, rgba(255,255,255,0.98), rgba(255,255,255,0.0));
-  opacity:0;
-  pointer-events:none;
-}
-.flash.on{ animation: flash .35s ease-out 1; }
-@keyframes flash{
-  0%{ opacity:0; }
-  10%{ opacity:1; }
-  100%{ opacity:0; }
-}
-
-/* とんでも専用：虹フラッシュ（上に重ねる） */
-.weird-flash{
-  position:absolute; inset:-30%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(255,0,100,0.25),
-    rgba(255,180,0,0.25),
-    rgba(0,200,255,0.25),
-    rgba(140,0,255,0.25),
-    rgba(255,0,100,0.25)
-  );
-  opacity:0;
-  pointer-events:none;
-  filter: blur(10px);
-}
-.weird-on .weird-flash{
-  animation: weirdFlash .45s ease-out 1;
-}
-@keyframes weirdFlash{
-  0%{ opacity:0; transform: scale(0.98) rotate(0deg); }
-  15%{ opacity:1; transform: scale(1.02) rotate(15deg); }
-  100%{ opacity:0; transform: scale(1.06) rotate(60deg); }
-}
-
-/* とんでも専用：枠の発光 */
-.weird-on .out{
-  border-color: rgba(59,130,246,0.35);
-  box-shadow:
-    0 0 0 1px rgba(59,130,246,0.18) inset,
-    0 18px 80px rgba(59,130,246,0.12);
-}
-
-/* 粒 */
+/* 粒（共用） */
 .particle{
   position:absolute;
   width:8px; height:8px;
@@ -202,4 +156,106 @@ button:active{ transform: translateY(1px) scale(0.99); }
 @keyframes fly{
   0%{ transform: translate(var(--x0), var(--y0)) rotate(0deg); opacity:1; }
   100%{ transform: translate(var(--x1), var(--y1)) rotate(220deg); opacity:0; }
+}
+
+/* =========================
+   大吉：ゴージャス演出（画面全体）
+   ========================= */
+.fx-lux{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999;
+  background:
+    radial-gradient(600px 320px at 50% 30%, rgba(255,220,120,0.55), rgba(255,220,120,0.0) 70%),
+    linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,255,255,0.0) 50%, rgba(255,215,0,0.12));
+}
+.fx-lux.on{
+  animation: luxInOut 1.05s ease-out 1;
+}
+@keyframes luxInOut{
+  0%{ opacity:0; transform: scale(0.98); }
+  10%{ opacity:1; transform: scale(1.00); }
+  80%{ opacity:1; }
+  100%{ opacity:0; transform: scale(1.03); }
+}
+
+/* キラキラ（画面上を流れる光） */
+.fx-lux::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    repeating-linear-gradient(
+      60deg,
+      rgba(255,255,255,0.0) 0 18px,
+      rgba(255,255,255,0.18) 18px 22px,
+      rgba(255,255,255,0.0) 22px 40px
+    );
+  filter: blur(2px);
+  opacity: 0;
+}
+.fx-lux.on::before{
+  animation: luxShine 1.05s ease-out 1;
+}
+@keyframes luxShine{
+  0%{ transform: translate(-10%, -10%) rotate(0deg); opacity:0; }
+  20%{ opacity:1; }
+  100%{ transform: translate(10%, 10%) rotate(18deg); opacity:0; }
+}
+
+/* =========================
+   大凶：悲しい演出（画面全体）
+   ========================= */
+.fx-sad{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999;
+  background:
+    radial-gradient(900px 520px at 50% 40%, rgba(0,0,0,0.28), rgba(0,0,0,0.62)),
+    linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55));
+}
+.fx-sad.on{
+  animation: sadInOut 1.25s ease-out 1;
+}
+@keyframes sadInOut{
+  0%{ opacity:0; }
+  12%{ opacity:1; }
+  80%{ opacity:1; }
+  100%{ opacity:0; }
+}
+
+/* 雨っぽい線 */
+.fx-sad::before{
+  content:"";
+  position:absolute;
+  inset:-20%;
+  background:
+    repeating-linear-gradient(
+      110deg,
+      rgba(255,255,255,0.0) 0 10px,
+      rgba(255,255,255,0.08) 10px 11px,
+      rgba(255,255,255,0.0) 11px 26px
+    );
+  filter: blur(0.6px);
+  opacity: 0;
+}
+.fx-sad.on::before{
+  animation: rain 1.25s linear 1;
+}
+@keyframes rain{
+  0%{ transform: translate(-6%, -6%); opacity:0; }
+  10%{ opacity:1; }
+  100%{ transform: translate(6%, 6%); opacity:0; }
+}
+
+/* 悲しいときはwrapも少し沈む */
+.sad-ui{
+  filter: grayscale(0.9) saturate(0.7);
+}
+.sad-ui .out{
+  background: linear-gradient(180deg, #f1f2f5, #e9ebf1);
 }
