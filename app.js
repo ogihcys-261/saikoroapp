@@ -18,10 +18,11 @@ const BOOM_MIN = 14;
 const BOOM_MAX = 16;
 
 // 爆発後に戻るまで
-const BOOM_RETURN_MS = 900; // ちょい長くして派手に見せる
+const BOOM_RETURN_MS = 1000;
 
 // 大吉/大凶の画面演出長
-const LUX_MS = 1400;
+const LUX_MS = 1550;
+const LUXWHITE_MS = 550;
 const SAD_MS = 1350;
 
 const wrap  = document.getElementById("wrap");
@@ -40,6 +41,10 @@ const fxLux = document.createElement("div");
 fxLux.className = "fx-lux";
 document.body.appendChild(fxLux);
 
+const fxLuxWhite = document.createElement("div");
+fxLuxWhite.className = "fx-luxwhite";
+document.body.appendChild(fxLuxWhite);
+
 const fxSad = document.createElement("div");
 fxSad.className = "fx-sad";
 document.body.appendChild(fxSad);
@@ -57,6 +62,11 @@ const halo = document.createElement("div");
 halo.className = "halo";
 panel.appendChild(halo);
 
+function setBusy(v) {
+  isBusy = v;
+  rollBtn.disabled = v;
+}
+
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -72,7 +82,7 @@ function currentWeirdRate() {
 
 // 超巨大数（演出なし）
 function rollHugeNumber() {
-  const digits = randInt(4, 11);          // 4桁〜11桁
+  const digits = randInt(4, 11);
   const base = Math.pow(10, digits - 1);
   const n = base + randInt(0, base * 9);
 
@@ -85,7 +95,7 @@ function rollHugeNumber() {
 function rollFortune() {
   const bag = [
     { v: "大吉", w: 16 },
-    { v: "超大吉", w: 7 },
+    { v: "超大吉", w: 8 },
     { v: "神吉", w: 4 },
 
     { v: "大凶", w: 16 },
@@ -117,11 +127,9 @@ function rollWeirdOutcome(faces) {
   }
 
   if (Math.random() < W_FORTUNE) {
-    const f = rollFortune();
-    return { value: f, kind: "fortune" };
-  } else {
-    return { value: rollHugeNumber(), kind: "huge" };
+    return { value: rollFortune(), kind: "fortune" };
   }
+  return { value: rollHugeNumber(), kind: "huge" };
 }
 
 function rollDice(faces) {
@@ -156,7 +164,7 @@ function fitText() {
 }
 
 // --- 音 ---
-// 大吉：豪華だけど耳に痛くない（和音っぽい）
+// 大吉系統：さらに“うれしくなる”和音（豪華）
 function playLuckySoundMoreHappy() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -169,27 +177,30 @@ function playLuckySoundMoreHappy() {
     const o1 = ctx.createOscillator();
     const o2 = ctx.createOscillator();
     const o3 = ctx.createOscillator();
+    const o4 = ctx.createOscillator();
 
     o1.type = "sine";
     o2.type = "triangle";
     o3.type = "sine";
+    o4.type = "sine";
 
-    // C - E - G っぽい比率（気持ちいい）
+    // C - E - G + 高いC（厚み）
     o1.frequency.value = 523.25; // C5
     o2.frequency.value = 659.25; // E5
     o3.frequency.value = 783.99; // G5
+    o4.frequency.value = 1046.50; // C6
 
-    o1.connect(g); o2.connect(g); o3.connect(g);
+    o1.connect(g); o2.connect(g); o3.connect(g); o4.connect(g);
 
     const t = ctx.currentTime;
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.18, t + 0.03);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    g.gain.exponentialRampToValueAtTime(0.22, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.70);
 
-    o1.start(t); o2.start(t); o3.start(t);
-    o1.stop(t + 0.60); o2.stop(t + 0.60); o3.stop(t + 0.60);
+    o1.start(t); o2.start(t); o3.start(t); o4.start(t);
+    o1.stop(t + 0.78); o2.stop(t + 0.78); o3.stop(t + 0.78); o4.stop(t + 0.78);
 
-    setTimeout(() => ctx.close(), 900);
+    setTimeout(() => ctx.close(), 1200);
   } catch (_) {}
 }
 
@@ -220,7 +231,7 @@ function playSadSound() {
   } catch (_) {}
 }
 
-// 爆発：さらに派手（ホワイトアウトに合わせてドン→ザザ）
+// 爆発：さらに派手
 function playBoomSoundBigger() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -243,20 +254,20 @@ function playBoomSoundBigger() {
 
     const t = ctx.currentTime;
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
-    o1.frequency.exponentialRampToValueAtTime(40, t + 0.22);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    g.gain.exponentialRampToValueAtTime(0.38, t + 0.02);
+    o1.frequency.exponentialRampToValueAtTime(40, t + 0.24);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.52);
 
     o1.start(t);
     o2.start(t);
-    o1.stop(t + 0.46);
-    o2.stop(t + 0.46);
+    o1.stop(t + 0.53);
+    o2.stop(t + 0.53);
 
-    setTimeout(() => ctx.close(), 900);
+    setTimeout(() => ctx.close(), 1000);
   } catch (_) {}
 }
 
-// --- 粒（countを増やしたときでも軽くする工夫） ---
+// --- 粒 ---
 function spawnParticles(count = 18, spread = 260, height = 170) {
   const rect = panel.getBoundingClientRect();
   const cx = rect.width / 2;
@@ -291,6 +302,7 @@ function clearEffects() {
   wrap.classList.remove("sad-ui");
 
   fxLux.classList.remove("on");
+  fxLuxWhite.classList.remove("on");
   fxSad.classList.remove("on");
   fxBoom.classList.remove("on");
   shock.classList.remove("on");
@@ -311,8 +323,14 @@ function resetCycleAfterBoom() {
   boomAt = randInt(BOOM_MIN, BOOM_MAX);
 }
 
-function triggerLuxUltra() {
-  // 全画面
+// 大吉：まぶしい + キラキラ物量（両方）
+function triggerLuxUltraCombo() {
+  setBusy(true);
+
+  wrap.classList.add("lucky");
+
+  // まぶしい（ホワイトアウト）→ すぐ豪華背景
+  fxLuxWhite.classList.add("on");
   fxLux.classList.add("on");
 
   // 光輪（panel中心）
@@ -320,15 +338,17 @@ function triggerLuxUltra() {
   halo.style.top = "50%";
   halo.classList.add("on");
 
-  // きらめき粒：超大量
-  spawnParticles(120, 360, 220);
-  spawnParticles(90, 320, 200); // 二段
+  // 物量（紙吹雪2段 + さらに追加）
+  spawnParticles(160, 420, 260);
+  spawnParticles(130, 400, 240);
+  spawnParticles(90, 360, 220);
 
-  // 追加フラッシュ + 強め揺れ
+  // フラッシュ + 強め揺れ
   flash.classList.add("on");
   panel.classList.add("shake-weird");
 
   // 解除
+  setTimeout(() => fxLuxWhite.classList.remove("on"), LUXWHITE_MS);
   setTimeout(() => {
     fxLux.classList.remove("on");
     halo.classList.remove("on");
@@ -337,41 +357,45 @@ function triggerLuxUltra() {
   setTimeout(() => {
     panel.classList.remove("shake-weird");
     flash.classList.remove("on");
-  }, 520);
+    setBusy(false);
+  }, Math.max(LUX_MS, 600));
 }
 
 function triggerSad() {
+  setBusy(true);
   wrap.classList.add("sad-ui");
   fxSad.classList.add("on");
+
   setTimeout(() => {
     fxSad.classList.remove("on");
     wrap.classList.remove("sad-ui");
+    setBusy(false);
   }, SAD_MS);
 }
 
 function triggerBoomUltra(faces) {
-  isBusy = true;
+  setBusy(true);
 
   wrap.classList.add("boom");
   fxBoom.classList.add("on");
   shock.classList.add("on");
 
-  // 爆発粒：さらに大量、遠くへ
-  spawnParticles(140, 420, 260);
-  spawnParticles(120, 420, 260);
+  // 爆発粒：超大量＆遠くへ
+  spawnParticles(160, 460, 300);
+  spawnParticles(140, 460, 300);
 
   playBoomSoundBigger();
 
-  // ちょい遅れて白フラッシュも足す
+  // 追いフラッシュ
   setTimeout(() => flash.classList.add("on"), 70);
-  setTimeout(() => flash.classList.remove("on"), 420);
+  setTimeout(() => flash.classList.remove("on"), 520);
 
   // 「何事もなかった」復帰
   setTimeout(() => {
     clearEffects();
     setFace(rollNormalDice(faces));
     resetCycleAfterBoom();
-    isBusy = false;
+    setBusy(false);
   }, BOOM_RETURN_MS);
 }
 
@@ -391,30 +415,40 @@ rollBtn.addEventListener("click", () => {
 
   setFace(res.value);
 
-  // 爆発：最強
+  // 爆発：最強（ここでもボタン無効）
   if (res.dice === "boom") {
     triggerBoomUltra(faces);
     return;
   }
 
-  // とんでも：超巨大数は演出なし
-  if (res.dice === "weird") {
-    if (res.kind === "fortune") {
-      const vStr = String(res.value);
+  // とんでも：超巨大数は演出なし（ボタンも止めない）
+  if (res.dice === "weird" && res.kind === "fortune") {
+    const vStr = String(res.value);
 
-      if (vStr.includes("大吉") || vStr.includes("神吉")) {
-        wrap.classList.add("lucky");
-        playLuckySoundMoreHappy();
-        triggerLuxUltra();
-      } else if (vStr.includes("大凶")) {
-        playSadSound();
-        triggerSad();
-      } else if (vStr.includes("凶")) {
-        playSadSound();
-        wrap.classList.add("sad-ui");
-        setTimeout(() => wrap.classList.remove("sad-ui"), 700);
-      }
-      // その他運勢：演出なし
+    // 大吉系統は“豪華に”
+    if (vStr.includes("大吉") || vStr.includes("神吉")) {
+      playLuckySoundMoreHappy();
+      triggerLuxUltraCombo();
+      return;
+    }
+
+    // 大凶は悲しい（演出中は押せない）
+    if (vStr.includes("大凶")) {
+      playSadSound();
+      triggerSad();
+      return;
+    }
+
+    // 凶は軽めに暗い（ここは押せない時間短めにする）
+    if (vStr.includes("凶")) {
+      playSadSound();
+      setBusy(true);
+      wrap.classList.add("sad-ui");
+      setTimeout(() => {
+        wrap.classList.remove("sad-ui");
+        setBusy(false);
+      }, 700);
+      return;
     }
   }
 

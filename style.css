@@ -62,11 +62,19 @@ button{
   border-radius: 14px;
   font-size: 16px;
   cursor:pointer;
-  transition: transform .05s ease, filter .2s ease;
+  transition: transform .05s ease, filter .2s ease, opacity .2s ease;
   user-select:none;
 }
 button:hover{ filter: brightness(1.05); }
 button:active{ transform: translateY(1px) scale(0.99); }
+
+/* 演出中：押せない見た目 */
+button:disabled{
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: grayscale(0.2);
+  transform: none;
+}
 
 .out{
   height: 190px;
@@ -116,8 +124,8 @@ button:active{ transform: translateY(1px) scale(0.99); }
   100%{ transform: translate(0,0) rotate(0deg); }
 }
 
-/* とんでも用：強め揺れ（大吉で使用） */
-.shake-weird{ animation: shakeWeird .48s linear 1; }
+/* 強め揺れ（大吉など） */
+.shake-weird{ animation: shakeWeird .52s linear 1; }
 @keyframes shakeWeird{
   0%{ transform: translate(0,0) rotate(0deg) scale(1); }
   15%{ transform: translate(-12px, 7px) rotate(-3deg) scale(1.02); }
@@ -140,7 +148,7 @@ button:active{ transform: translateY(1px) scale(0.99); }
   100%{ transform: translate(0,0) scale(1); }
 }
 
-/* 粒（共用） */
+/* 粒 */
 .particle{
   position:absolute;
   width:8px; height:8px;
@@ -149,12 +157,12 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0.9;
   pointer-events:none;
   transform: translate(-50%, -50%);
-  animation: fly .9s ease-out forwards;
+  animation: fly .95s ease-out forwards;
   filter: drop-shadow(0 6px 10px rgba(17,24,39,0.18));
 }
 @keyframes fly{
   0%{ transform: translate(var(--x0), var(--y0)) rotate(0deg); opacity:1; }
-  100%{ transform: translate(var(--x1), var(--y1)) rotate(320deg); opacity:0; }
+  100%{ transform: translate(var(--x1), var(--y1)) rotate(340deg); opacity:0; }
 }
 
 /* =========================
@@ -167,20 +175,39 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0;
   z-index: 999;
   background:
-    radial-gradient(900px 520px at 50% 35%, rgba(255,225,140,0.65), rgba(255,225,140,0.0) 68%),
-    radial-gradient(1200px 650px at 50% 60%, rgba(255,255,255,0.26), rgba(255,255,255,0.0) 70%),
-    linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,255,255,0.0) 55%, rgba(255,215,0,0.16));
-  filter: saturate(1.15) contrast(1.05);
+    radial-gradient(900px 520px at 50% 35%, rgba(255,225,140,0.70), rgba(255,225,140,0.0) 68%),
+    radial-gradient(1200px 650px at 50% 60%, rgba(255,255,255,0.32), rgba(255,255,255,0.0) 70%),
+    linear-gradient(135deg, rgba(255,215,0,0.20), rgba(255,255,255,0.0) 55%, rgba(255,215,0,0.18));
+  filter: saturate(1.2) contrast(1.08);
 }
-.fx-lux.on{ animation: luxInOut 1.4s ease-out 1; }
+.fx-lux.on{ animation: luxInOut 1.55s ease-out 1; }
 @keyframes luxInOut{
   0%{ opacity:0; transform: scale(0.98); }
   10%{ opacity:1; transform: scale(1.00); }
   75%{ opacity:1; }
+  100%{ opacity:0; transform: scale(1.06); }
+}
+
+/* 追加：大吉ホワイトアウト（まぶしい系） */
+.fx-luxwhite{
+  position: fixed;
+  inset: 0;
+  pointer-events:none;
+  opacity: 0;
+  z-index: 1002;
+  background:
+    radial-gradient(700px 420px at 50% 45%, rgba(255,255,255,1), rgba(255,255,255,0.0) 68%),
+    radial-gradient(1300px 900px at 50% 50%, rgba(255,245,210,0.65), rgba(255,245,210,0.0) 74%);
+}
+.fx-luxwhite.on{ animation: luxWhite 0.55s ease-out 1; }
+@keyframes luxWhite{
+  0%{ opacity:0; transform: scale(0.98); }
+  12%{ opacity:1; transform: scale(1.01); }
+  60%{ opacity:1; }
   100%{ opacity:0; transform: scale(1.05); }
 }
 
-/* キラキラ走査光 */
+/* 走査光 */
 .fx-lux::before{
   content:"";
   position:absolute;
@@ -189,83 +216,81 @@ button:active{ transform: translateY(1px) scale(0.99); }
     repeating-linear-gradient(
       60deg,
       rgba(255,255,255,0.0) 0 14px,
-      rgba(255,255,255,0.22) 14px 18px,
+      rgba(255,255,255,0.24) 14px 18px,
       rgba(255,255,255,0.0) 18px 36px
     );
   filter: blur(2px);
   opacity: 0;
 }
-.fx-lux.on::before{ animation: luxShine 1.4s ease-out 1; }
+.fx-lux.on::before{ animation: luxShine 1.55s ease-out 1; }
 @keyframes luxShine{
   0%{ transform: translate(-12%, -12%) rotate(0deg); opacity:0; }
   18%{ opacity:1; }
   100%{ transform: translate(12%, 12%) rotate(22deg); opacity:0; }
 }
 
-/* ふわふわ光粒 */
+/* 光粒 */
 .fx-lux::after{
   content:"";
   position:absolute;
   inset:0;
   background:
-    radial-gradient(3px 3px at 12% 20%, rgba(255,255,255,0.9), rgba(255,255,255,0.0) 70%),
-    radial-gradient(2px 2px at 30% 70%, rgba(255,255,255,0.8), rgba(255,255,255,0.0) 70%),
-    radial-gradient(3px 3px at 75% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.0) 70%),
-    radial-gradient(2px 2px at 85% 65%, rgba(255,255,255,0.8), rgba(255,255,255,0.0) 70%),
-    radial-gradient(3px 3px at 55% 45%, rgba(255,255,255,0.85), rgba(255,255,255,0.0) 70%);
+    radial-gradient(3px 3px at 12% 20%, rgba(255,255,255,0.92), rgba(255,255,255,0.0) 70%),
+    radial-gradient(2px 2px at 30% 70%, rgba(255,255,255,0.86), rgba(255,255,255,0.0) 70%),
+    radial-gradient(3px 3px at 75% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0.0) 70%),
+    radial-gradient(2px 2px at 85% 65%, rgba(255,255,255,0.86), rgba(255,255,255,0.0) 70%),
+    radial-gradient(3px 3px at 55% 45%, rgba(255,255,255,0.88), rgba(255,255,255,0.0) 70%);
   opacity:0;
 }
-.fx-lux.on::after{ animation: luxSpark 1.4s ease-out 1; }
+.fx-lux.on::after{ animation: luxSpark 1.55s ease-out 1; }
 @keyframes luxSpark{
   0%{ opacity:0; transform: scale(0.98); }
   20%{ opacity:1; }
-  100%{ opacity:0; transform: scale(1.05); }
+  100%{ opacity:0; transform: scale(1.06); }
 }
 
-/* 大吉時：数字自体も“王”っぽく */
+/* 大吉の文字も王様 */
 .lucky #face{
   background: linear-gradient(90deg, var(--gold1), var(--gold2), var(--gold3), var(--gold1));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow:
-    0 0 24px rgba(245,158,11,0.30),
-    0 18px 40px rgba(17,24,39,0.10);
-  filter: drop-shadow(0 0 18px rgba(245,158,11,0.20));
+    0 0 28px rgba(245,158,11,0.35),
+    0 18px 44px rgba(17,24,39,0.10);
+  filter: drop-shadow(0 0 20px rgba(245,158,11,0.24));
 }
 .lucky .out{
-  border-color: rgba(245,158,11,0.40);
+  border-color: rgba(245,158,11,0.45);
   box-shadow:
-    0 0 0 1px rgba(245,158,11,0.16) inset,
-    0 22px 90px rgba(245,158,11,0.16);
+    0 0 0 1px rgba(245,158,11,0.18) inset,
+    0 24px 100px rgba(245,158,11,0.18);
 }
 
-/* 光輪（大吉専用） */
+/* 光輪 */
 .halo{
   position:absolute;
-  width: 360px;
-  height: 360px;
+  width: 380px;
+  height: 380px;
   border-radius: 999px;
   pointer-events:none;
   opacity:0;
   background: conic-gradient(
     from 0deg,
     rgba(255,215,0,0.0),
-    rgba(255,215,0,0.35),
-    rgba(255,255,255,0.25),
-    rgba(255,215,0,0.35),
+    rgba(255,215,0,0.36),
+    rgba(255,255,255,0.28),
+    rgba(255,215,0,0.36),
     rgba(255,215,0,0.0)
   );
-  filter: blur(6px);
+  filter: blur(7px);
   mix-blend-mode: screen;
 }
-.halo.on{
-  animation: haloSpin 1.25s ease-out 1;
-}
+.halo.on{ animation: haloSpin 1.35s ease-out 1; }
 @keyframes haloSpin{
-  0%{ opacity:0; transform: translate(-50%,-50%) rotate(0deg) scale(0.92); }
+  0%{ opacity:0; transform: translate(-50%,-50%) rotate(0deg) scale(0.90); }
   12%{ opacity:1; }
-  100%{ opacity:0; transform: translate(-50%,-50%) rotate(220deg) scale(1.08); }
+  100%{ opacity:0; transform: translate(-50%,-50%) rotate(260deg) scale(1.10); }
 }
 
 /* =========================
@@ -312,7 +337,7 @@ button:active{ transform: translateY(1px) scale(0.99); }
 .sad-ui .out{ background: linear-gradient(180deg, #f1f2f5, #e9ebf1); }
 
 /* =========================
-   爆発：全画面ホワイトアウト + 熱波
+   爆発：全画面ホワイトアウト + 衝撃波
    ========================= */
 .fx-boom{
   position: fixed;
@@ -321,35 +346,34 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0;
   z-index: 1000;
   background:
-    radial-gradient(520px 320px at 50% 45%, rgba(255,255,255,1), rgba(255,255,255,0.0) 65%),
-    radial-gradient(1200px 800px at 50% 50%, rgba(255,220,120,0.35), rgba(255,220,120,0.0) 70%),
-    linear-gradient(0deg, rgba(255,255,255,0.35), rgba(255,255,255,0.0));
-  filter: saturate(1.2) contrast(1.1);
+    radial-gradient(560px 340px at 50% 45%, rgba(255,255,255,1), rgba(255,255,255,0.0) 65%),
+    radial-gradient(1200px 800px at 50% 50%, rgba(255,220,120,0.40), rgba(255,220,120,0.0) 72%),
+    linear-gradient(0deg, rgba(255,255,255,0.45), rgba(255,255,255,0.0));
+  filter: saturate(1.25) contrast(1.12);
 }
-.fx-boom.on{ animation: boomWhite 0.95s ease-out 1; }
+.fx-boom.on{ animation: boomWhite 1.05s ease-out 1; }
 @keyframes boomWhite{
   0%{ opacity:0; transform: scale(0.98); }
-  10%{ opacity:1; transform: scale(1.01); }
-  55%{ opacity:1; }
-  100%{ opacity:0; transform: scale(1.05); }
+  10%{ opacity:1; transform: scale(1.02); }
+  60%{ opacity:1; }
+  100%{ opacity:0; transform: scale(1.06); }
 }
 
-/* 衝撃波リング */
 .shockwave{
   position: fixed;
   left:50%; top:50%;
   width: 40px; height: 40px;
   border-radius: 999px;
-  border: 4px solid rgba(255,255,255,0.85);
+  border: 4px solid rgba(255,255,255,0.88);
   opacity:0;
   pointer-events:none;
   z-index: 1001;
   transform: translate(-50%,-50%);
-  box-shadow: 0 0 40px rgba(255,255,255,0.55);
+  box-shadow: 0 0 46px rgba(255,255,255,0.60);
 }
-.shockwave.on{ animation: shock 0.7s ease-out 1; }
+.shockwave.on{ animation: shock 0.75s ease-out 1; }
 @keyframes shock{
   0%{ opacity:0; transform: translate(-50%,-50%) scale(0.4); }
   12%{ opacity:1; }
-  100%{ opacity:0; transform: translate(-50%,-50%) scale(18); }
+  100%{ opacity:0; transform: translate(-50%,-50%) scale(20); }
 }
