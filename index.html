@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>とんでもさいころ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap" id="wrap">
+    <h1>とんでもさいころ</h1>
+
+    <div class="row">
+      <label for="faces">面数 N（1〜N）</label>
+      <input id="faces" type="number" min="1" value="6" />
+      <button id="roll">振る</button>
+    </div>
+
+    <div class="out" id="panel">
+      <div class="flash" id="flash"></div>
+      <div id="face">-</div>
+    </div>
+
+    <div id="info"></div>
+    <div class="hint">
+      仕様：<code>95%</code> 普通 / <code>5%</code> とんでも（その中でレアあり） / 超低確率で爆発
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
