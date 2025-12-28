@@ -8,6 +8,7 @@
 
   --gold1:#f59e0b;
   --gold2:#fde68a;
+  --gold3:#fff7cc;
 }
 
 body{
@@ -39,10 +40,7 @@ body{
   margin-bottom: 14px;
 }
 
-label{
-  color:var(--muted);
-  font-size: 14px;
-}
+label{ color:var(--muted); font-size: 14px; }
 
 input{
   width: 110px;
@@ -78,6 +76,7 @@ button:active{ transform: translateY(1px) scale(0.99); }
   background: linear-gradient(180deg, #ffffff, #f7f8fc);
   border: 1px solid rgba(17,24,39,0.10);
   position: relative;
+  overflow:hidden;
 }
 
 #face{
@@ -117,27 +116,27 @@ button:active{ transform: translateY(1px) scale(0.99); }
   100%{ transform: translate(0,0) rotate(0deg); }
 }
 
-/* とんでも用：強め揺れ（ただし“大きい数字”には使わない運用） */
-.shake-weird{ animation: shakeWeird .38s linear 1; }
+/* とんでも用：強め揺れ（大吉で使用） */
+.shake-weird{ animation: shakeWeird .48s linear 1; }
 @keyframes shakeWeird{
   0%{ transform: translate(0,0) rotate(0deg) scale(1); }
-  15%{ transform: translate(-10px, 6px) rotate(-2deg) scale(1.01); }
-  30%{ transform: translate(12px, -8px) rotate(3deg) scale(1.02); }
-  45%{ transform: translate(-9px, -6px) rotate(-3deg) scale(1.02); }
-  60%{ transform: translate(10px, 7px) rotate(2deg) scale(1.01); }
-  80%{ transform: translate(-6px, 3px) rotate(-1deg) scale(1.00); }
+  15%{ transform: translate(-12px, 7px) rotate(-3deg) scale(1.02); }
+  30%{ transform: translate(14px, -10px) rotate(4deg) scale(1.03); }
+  45%{ transform: translate(-11px, -7px) rotate(-4deg) scale(1.03); }
+  60%{ transform: translate(12px, 8px) rotate(3deg) scale(1.02); }
+  80%{ transform: translate(-7px, 4px) rotate(-2deg) scale(1.01); }
   100%{ transform: translate(0,0) rotate(0deg) scale(1); }
 }
 
 /* 爆発（wrapを揺らす） */
-.boom{ animation: boomshake .45s ease-in-out 1; }
+.boom{ animation: boomshake .62s ease-in-out 1; }
 @keyframes boomshake{
   0%{ transform: translate(0,0) scale(1); }
-  12%{ transform: translate(-10px, 6px) scale(1.01); }
-  24%{ transform: translate(12px, -8px) scale(1.02); }
-  36%{ transform: translate(-9px, -6px) scale(1.02); }
-  48%{ transform: translate(10px, 7px) scale(1.01); }
-  60%{ transform: translate(-6px, 3px) scale(1.00); }
+  10%{ transform: translate(-14px, 8px) scale(1.01); }
+  20%{ transform: translate(18px, -12px) scale(1.02); }
+  32%{ transform: translate(-16px, -10px) scale(1.03); }
+  44%{ transform: translate(16px, 12px) scale(1.02); }
+  58%{ transform: translate(-10px, 6px) scale(1.01); }
   100%{ transform: translate(0,0) scale(1); }
 }
 
@@ -150,16 +149,16 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0.9;
   pointer-events:none;
   transform: translate(-50%, -50%);
-  animation: fly .7s ease-out forwards;
+  animation: fly .9s ease-out forwards;
   filter: drop-shadow(0 6px 10px rgba(17,24,39,0.18));
 }
 @keyframes fly{
   0%{ transform: translate(var(--x0), var(--y0)) rotate(0deg); opacity:1; }
-  100%{ transform: translate(var(--x1), var(--y1)) rotate(220deg); opacity:0; }
+  100%{ transform: translate(var(--x1), var(--y1)) rotate(320deg); opacity:0; }
 }
 
 /* =========================
-   大吉：ゴージャス演出（画面全体）
+   大吉：超ゴージャス（全画面）
    ========================= */
 .fx-lux{
   position: fixed;
@@ -168,45 +167,109 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0;
   z-index: 999;
   background:
-    radial-gradient(600px 320px at 50% 30%, rgba(255,220,120,0.55), rgba(255,220,120,0.0) 70%),
-    linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,255,255,0.0) 50%, rgba(255,215,0,0.12));
+    radial-gradient(900px 520px at 50% 35%, rgba(255,225,140,0.65), rgba(255,225,140,0.0) 68%),
+    radial-gradient(1200px 650px at 50% 60%, rgba(255,255,255,0.26), rgba(255,255,255,0.0) 70%),
+    linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,255,255,0.0) 55%, rgba(255,215,0,0.16));
+  filter: saturate(1.15) contrast(1.05);
 }
-.fx-lux.on{
-  animation: luxInOut 1.05s ease-out 1;
-}
+.fx-lux.on{ animation: luxInOut 1.4s ease-out 1; }
 @keyframes luxInOut{
   0%{ opacity:0; transform: scale(0.98); }
   10%{ opacity:1; transform: scale(1.00); }
-  80%{ opacity:1; }
-  100%{ opacity:0; transform: scale(1.03); }
+  75%{ opacity:1; }
+  100%{ opacity:0; transform: scale(1.05); }
 }
 
-/* キラキラ（画面上を流れる光） */
+/* キラキラ走査光 */
 .fx-lux::before{
   content:"";
   position:absolute;
-  inset:-40%;
+  inset:-50%;
   background:
     repeating-linear-gradient(
       60deg,
-      rgba(255,255,255,0.0) 0 18px,
-      rgba(255,255,255,0.18) 18px 22px,
-      rgba(255,255,255,0.0) 22px 40px
+      rgba(255,255,255,0.0) 0 14px,
+      rgba(255,255,255,0.22) 14px 18px,
+      rgba(255,255,255,0.0) 18px 36px
     );
   filter: blur(2px);
   opacity: 0;
 }
-.fx-lux.on::before{
-  animation: luxShine 1.05s ease-out 1;
-}
+.fx-lux.on::before{ animation: luxShine 1.4s ease-out 1; }
 @keyframes luxShine{
-  0%{ transform: translate(-10%, -10%) rotate(0deg); opacity:0; }
+  0%{ transform: translate(-12%, -12%) rotate(0deg); opacity:0; }
+  18%{ opacity:1; }
+  100%{ transform: translate(12%, 12%) rotate(22deg); opacity:0; }
+}
+
+/* ふわふわ光粒 */
+.fx-lux::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(3px 3px at 12% 20%, rgba(255,255,255,0.9), rgba(255,255,255,0.0) 70%),
+    radial-gradient(2px 2px at 30% 70%, rgba(255,255,255,0.8), rgba(255,255,255,0.0) 70%),
+    radial-gradient(3px 3px at 75% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.0) 70%),
+    radial-gradient(2px 2px at 85% 65%, rgba(255,255,255,0.8), rgba(255,255,255,0.0) 70%),
+    radial-gradient(3px 3px at 55% 45%, rgba(255,255,255,0.85), rgba(255,255,255,0.0) 70%);
+  opacity:0;
+}
+.fx-lux.on::after{ animation: luxSpark 1.4s ease-out 1; }
+@keyframes luxSpark{
+  0%{ opacity:0; transform: scale(0.98); }
   20%{ opacity:1; }
-  100%{ transform: translate(10%, 10%) rotate(18deg); opacity:0; }
+  100%{ opacity:0; transform: scale(1.05); }
+}
+
+/* 大吉時：数字自体も“王”っぽく */
+.lucky #face{
+  background: linear-gradient(90deg, var(--gold1), var(--gold2), var(--gold3), var(--gold1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 0 24px rgba(245,158,11,0.30),
+    0 18px 40px rgba(17,24,39,0.10);
+  filter: drop-shadow(0 0 18px rgba(245,158,11,0.20));
+}
+.lucky .out{
+  border-color: rgba(245,158,11,0.40);
+  box-shadow:
+    0 0 0 1px rgba(245,158,11,0.16) inset,
+    0 22px 90px rgba(245,158,11,0.16);
+}
+
+/* 光輪（大吉専用） */
+.halo{
+  position:absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 999px;
+  pointer-events:none;
+  opacity:0;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255,215,0,0.0),
+    rgba(255,215,0,0.35),
+    rgba(255,255,255,0.25),
+    rgba(255,215,0,0.35),
+    rgba(255,215,0,0.0)
+  );
+  filter: blur(6px);
+  mix-blend-mode: screen;
+}
+.halo.on{
+  animation: haloSpin 1.25s ease-out 1;
+}
+@keyframes haloSpin{
+  0%{ opacity:0; transform: translate(-50%,-50%) rotate(0deg) scale(0.92); }
+  12%{ opacity:1; }
+  100%{ opacity:0; transform: translate(-50%,-50%) rotate(220deg) scale(1.08); }
 }
 
 /* =========================
-   大凶：悲しい演出（画面全体）
+   大凶：悲しい（全画面）
    ========================= */
 .fx-sad{
   position: fixed;
@@ -215,20 +278,16 @@ button:active{ transform: translateY(1px) scale(0.99); }
   opacity: 0;
   z-index: 999;
   background:
-    radial-gradient(900px 520px at 50% 40%, rgba(0,0,0,0.28), rgba(0,0,0,0.62)),
-    linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55));
+    radial-gradient(900px 520px at 50% 40%, rgba(0,0,0,0.28), rgba(0,0,0,0.66)),
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.62));
 }
-.fx-sad.on{
-  animation: sadInOut 1.25s ease-out 1;
-}
+.fx-sad.on{ animation: sadInOut 1.35s ease-out 1; }
 @keyframes sadInOut{
   0%{ opacity:0; }
   12%{ opacity:1; }
   80%{ opacity:1; }
   100%{ opacity:0; }
 }
-
-/* 雨っぽい線 */
 .fx-sad::before{
   content:"";
   position:absolute;
@@ -243,19 +302,54 @@ button:active{ transform: translateY(1px) scale(0.99); }
   filter: blur(0.6px);
   opacity: 0;
 }
-.fx-sad.on::before{
-  animation: rain 1.25s linear 1;
-}
+.fx-sad.on::before{ animation: rain 1.35s linear 1; }
 @keyframes rain{
-  0%{ transform: translate(-6%, -6%); opacity:0; }
+  0%{ transform: translate(-7%, -7%); opacity:0; }
   10%{ opacity:1; }
-  100%{ transform: translate(6%, 6%); opacity:0; }
+  100%{ transform: translate(7%, 7%); opacity:0; }
+}
+.sad-ui{ filter: grayscale(0.92) saturate(0.65) brightness(0.96); }
+.sad-ui .out{ background: linear-gradient(180deg, #f1f2f5, #e9ebf1); }
+
+/* =========================
+   爆発：全画面ホワイトアウト + 熱波
+   ========================= */
+.fx-boom{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1000;
+  background:
+    radial-gradient(520px 320px at 50% 45%, rgba(255,255,255,1), rgba(255,255,255,0.0) 65%),
+    radial-gradient(1200px 800px at 50% 50%, rgba(255,220,120,0.35), rgba(255,220,120,0.0) 70%),
+    linear-gradient(0deg, rgba(255,255,255,0.35), rgba(255,255,255,0.0));
+  filter: saturate(1.2) contrast(1.1);
+}
+.fx-boom.on{ animation: boomWhite 0.95s ease-out 1; }
+@keyframes boomWhite{
+  0%{ opacity:0; transform: scale(0.98); }
+  10%{ opacity:1; transform: scale(1.01); }
+  55%{ opacity:1; }
+  100%{ opacity:0; transform: scale(1.05); }
 }
 
-/* 悲しいときはwrapも少し沈む */
-.sad-ui{
-  filter: grayscale(0.9) saturate(0.7);
+/* 衝撃波リング */
+.shockwave{
+  position: fixed;
+  left:50%; top:50%;
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  border: 4px solid rgba(255,255,255,0.85);
+  opacity:0;
+  pointer-events:none;
+  z-index: 1001;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 40px rgba(255,255,255,0.55);
 }
-.sad-ui .out{
-  background: linear-gradient(180deg, #f1f2f5, #e9ebf1);
+.shockwave.on{ animation: shock 0.7s ease-out 1; }
+@keyframes shock{
+  0%{ opacity:0; transform: translate(-50%,-50%) scale(0.4); }
+  12%{ opacity:1; }
+  100%{ opacity:0; transform: translate(-50%,-50%) scale(18); }
 }
